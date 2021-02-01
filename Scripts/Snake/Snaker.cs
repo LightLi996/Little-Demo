@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Snaker : MonoBehaviour
+public class Snaker
 {
     public Vector3 target;
 
@@ -36,7 +36,7 @@ public class Snaker : MonoBehaviour
 
     private void GenerateBlock(int index, BlockType type)
     {
-        GameObject go = Instantiate(Resources.Load(GameMain.BLUE_BLOCK_PATH + type.ToString())) as GameObject;
+        GameObject go = GameObject.Instantiate(Resources.Load(GameMain.BLUE_BLOCK_PATH + type.ToString())) as GameObject;
         SnakeBlock block = go.GetComponent<SnakeBlock>();
         block.Init(index, type);
         _listBlock.Add(block);
