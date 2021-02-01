@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -9,34 +10,20 @@ public enum BlockType
     Tail,
 }
 
+
 public abstract class SnakeBlock : MonoBehaviour
 {
     protected int index;
     protected BlockType type;
-    protected float moveSpeed;
-    protected float rotSpeed;
 
-    private Action _action;
+    private Dictionary<CmdType, Action<SnakeCmd>> _actions = new Dictionary<CmdType, Action<SnakeCmd>>();
 
 
-    public void Init(int index, BlockType type, float moveSpeed, float rotSpeed)
+    public void Init(int index, BlockType type)
     {
+        RegisterCmd();
         this.index = index;
         this.type = type;
-        this.moveSpeed = moveSpeed;
-        this.rotSpeed = rotSpeed;
-    }
-
-    public void Move()
-    {
-        Vector3 pos = transform.position;
-        pos.z += moveSpeed;
-        transform.position = pos;
-    }
-
-    public void Rotate()
-    {
-
     }
 
     public void BeHit()
@@ -49,18 +36,40 @@ public abstract class SnakeBlock : MonoBehaviour
 
     }
 
-    public void ExcAction()
+    public void ExcCmd(SnakeCmd cmd)
     {
-        _action?.Invoke();
+        Action<SnakeCmd> func;
+        if (_actions.TryGetValue(cmd.type, out func))
+        {
+            func?.Invoke(cmd);
+        }
     }
 
-    public void AcceptAction(Action action)
+    public void Dispose()
     {
-        _action = action;
+
     }
 
-    public Action GetAction()
+
+    private void RegisterCmd()
     {
-        return _action;
+        _actions.Clear();
+        _actions.Add(CmdType.Rotate, Rotate);
+        _actions.Add(CmdType.Move, Move);
+    }
+
+    private void Rotate(SnakeCmd cmd)
+    {
+        float rotSpeed = ((RotateCmd) cmd).rotParam.rotSpeed;
+        Vector3 rot = Vector3.up;
+        transform.Rotate(rot * rotSpeed);
+    }
+
+    private void Move(SnakeCmd cmd)
+    {
+        float moveSpeed = ((MoveCmd) cmd).moveParam.moveSpeed;
+        Vector3 pos = transform.position;
+        pos.z += moveSpeed;
+        transform.position = pos;
     }
 }

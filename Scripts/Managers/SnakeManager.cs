@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SnakeManager : MonoBehaviour, IDispose
+public class SnakeManager : MonoBehaviour, IManager
 {
     public float moveSpeed = 0.1f;
     public float rotSpeed = 0.01f;
@@ -28,8 +28,17 @@ public class SnakeManager : MonoBehaviour, IDispose
         for(int i = 0; i < _listSnaker.Count; i++)
         {
             _listSnaker[i].Move();
+            _listSnaker[i].Rotate();
         }
     }
+
+    //public MoveCmd CreateMoveCmd(SnakeBlock excer, ICmdParam param)
+    //{
+    //    //ObjectCacheModel cache = GameMain.main.GetModel<ObjectCacheModel>();
+    //    //MoveCmd cmd = cache.GetObjectCache<MoveCmd>();
+    //    //cmd.Gen(excer, param);
+    //    //return cmd;
+    //}
 
     public void Dispose()
     {

@@ -1,10 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IDispose
+public interface IManager
 {
     void UpdateExc();
+    void Dispose();
+}
+
+public interface IModel
+{
+    void Construct();
     void Dispose();
 }
 
@@ -14,15 +21,21 @@ public class GameMain : MonoBehaviour
     private static readonly string MANAGER_PATH = "Managers/";
     public static readonly string BLUE_BLOCK_PATH = "Characters/Snakes/Blue/";
 
-    private Dictionary<string, IDispose> _dictMgrPool;
+    //public static GameMain main;
+
+    private Dictionary<string, IManager> _dictMgrPool;
+    private Dictionary<string, IModel> _dictModelPool;
 
     private bool _inited = false;
 
     void Awake()
     {
-        _dictMgrPool = new Dictionary<string, IDispose>();
+        _dictMgrPool = new Dictionary<string, IManager>();
+        _dictModelPool = new Dictionary<string, IModel>();
 
-        LoadManager<SnakeManager>("SnakeManager");
+        LoadManager<SnakeManager>();
+
+        ConstructModel<ObjectCacheModel>();
 
         _inited = true;
     }
@@ -38,25 +51,45 @@ public class GameMain : MonoBehaviour
     }
 
 
-    public T GetManager<T>(string mgrName) where T : IDispose
+    public T GetManager<T>(string mgrName) where T : IManager
     {
-        IDispose mgr;
+        IManager mgr;
         if(_dictMgrPool.TryGetValue(mgrName, out mgr) == false)
         {
-            mgr = LoadManager<T>(mgrName);
+            mgr = LoadManager<T>();
         }
 
-        return (T)mgr;
+        return (T) mgr;
     }
 
 
-    private T LoadManager<T>(string mgrName) where T : IDispose
+    public T GetModel<T>() where T : IModel
     {
-        GameObject go = Instantiate(Resources.Load(MANAGER_PATH + mgrName)) as GameObject;
+        IModel model;
+        if (_dictModelPool.TryGetValue(typeof(T).ToString(), out model) == false)
+        {
+            model = ConstructModel<T>();
+        }
+
+        return (T) model;
+    }
+
+
+    private T LoadManager<T>() where T : IManager
+    {
+        string name = typeof(T).ToString();
+        GameObject go = Instantiate(Resources.Load(MANAGER_PATH + name)) as GameObject;
         T mgr = go.GetComponent<T>();
-        _dictMgrPool.Add(mgrName, mgr);
+        _dictMgrPool.Add(name, mgr);
         return mgr;
     }
-     
 
+
+    private T ConstructModel<T>() where T : IModel
+    {
+        T model = Activator.CreateInstance<T>();
+        model.Construct();
+        _dictModelPool.Add(typeof(T).ToString(), model);
+        return model;
+    }
 }

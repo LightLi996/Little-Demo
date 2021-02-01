@@ -9,37 +9,36 @@ public class Snaker : MonoBehaviour
     private List<SnakeBlock> _listBlock = new List<SnakeBlock>();
 
     private int _index;
+    private float moveSpeed;
+    private float rotSpeed;
 
     public void Init(float moveSpeed, float rotSpeed)
     {
         _index = 0;
-        GenerateBlock(_index++, BlockType.Head, moveSpeed, rotSpeed);
-        GenerateBlock(_index++, BlockType.Body, moveSpeed, rotSpeed);
-        GenerateBlock(_index++, BlockType.Tail, moveSpeed, rotSpeed);
+        this.moveSpeed = moveSpeed;
+        this.rotSpeed = rotSpeed;
+        GenerateBlock(_index++, BlockType.Head);
+        GenerateBlock(_index++, BlockType.Body);
+        GenerateBlock(_index++, BlockType.Tail);
 
         SetPosition();
     }
 
     public void Move()
     {
-        for(int i = 0; i < _listBlock.Count; i++)
-        {
-            _listBlock[i].Move();
-        }
+        
     }
 
     public void Rotate()
     {
-        Vector3 pos = transform.position;
-        Vector3 dir = target - pos;
-
+        
     }
 
-    private void GenerateBlock(int index, BlockType type, float moveSpeed, float rotSpeed)
+    private void GenerateBlock(int index, BlockType type)
     {
         GameObject go = Instantiate(Resources.Load(GameMain.BLUE_BLOCK_PATH + type.ToString())) as GameObject;
         SnakeBlock block = go.GetComponent<SnakeBlock>();
-        block.Init(index, type, moveSpeed, rotSpeed);
+        block.Init(index, type);
         _listBlock.Add(block);
     }
 
