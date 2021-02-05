@@ -18,10 +18,24 @@
         void Destruct();
     }
 
+    public interface ICmdParam
+    {
+        void Reset();
+    }
+
     public enum BlockType
     {
         Head,
         Body,
         Tail,
     }
+
+    public enum CmdType
+    {
+        Move,
+        Rotate,
+        Max,
+    }
+
+
 }

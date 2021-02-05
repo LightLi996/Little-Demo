@@ -32,17 +32,25 @@ namespace Framework.Manager
         {
             for (int i = 0; i < _listSnaker.Count; i++)
             {
-                _listSnaker[i].Move();
-                _listSnaker[i].Rotate();
+                _listSnaker[i].MoveControl();
+                _listSnaker[i].RotateControl();
+                _listSnaker[i].ExcCmd();
             }
         }
 
-        public MoveCmd CreateMoveCmd(SnakeBlock excer, ICmdParam param)
+        public T CreateCmd<T>(SnakeBlock excer, ICmdParam param) where T : SnakeCmd
         {
-            ObjectCacheModel cache = SingleModel<ObjectCacheModel>.Get();
-            MoveCmd cmd = cache.GetObjectCache<MoveCmd>();
-            cmd.Gen(excer, param);
-            return cmd;
+            if(param != null)
+            {
+                ObjectCacheModel cache = SingleModel<ObjectCacheModel>.Get();
+                T cmd = cache.GetObjectCache<T>();
+                cmd.Gen(excer, param);
+                return cmd;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public void Dispose()

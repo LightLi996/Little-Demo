@@ -1,23 +1,11 @@
-﻿using Framework.Model;
-using GameLogic.Object;
+﻿using GameLogic.Object;
 
 namespace Framework.Behavior
 {
-    public enum CmdType
-    {
-        Move,
-        Rotate,
-    }
-
-    public interface ICmdParam
-    {
-        void Reset();
-    }
-
     public struct MoveParam : ICmdParam
     {
         public float moveSpeed;
-
+        
         public void Reset()
         {
             moveSpeed = 0;
@@ -59,6 +47,7 @@ namespace Framework.Behavior
         public override void Gen(SnakeBlock excer, ICmdParam param)
         {
             moveParam = (MoveParam)param;
+            type = CmdType.Move;
             this.excer = excer;
         }
 
@@ -75,6 +64,7 @@ namespace Framework.Behavior
         public override void Gen(SnakeBlock excer, ICmdParam param)
         {
             rotParam = (RotateParam)param;
+            type = CmdType.Rotate;
             this.excer = excer;
         }
 

@@ -50,22 +50,22 @@ namespace GameLogic.Object
         private void RegisterCmd()
         {
             _actions.Clear();
-            _actions.Add(CmdType.Rotate, Rotate);
-            _actions.Add(CmdType.Move, Move);
+            _actions.Add(CmdType.Move, OnMove);
+            _actions.Add(CmdType.Rotate, OnRotate);
         }
 
-        private void Rotate(SnakeCmd cmd)
+        private void OnRotate(SnakeCmd cmd)
         {
             float rotSpeed = ((RotateCmd)cmd).rotParam.rotSpeed;
             Vector3 rot = Vector3.up;
             transform.Rotate(rot * rotSpeed);
         }
 
-        private void Move(SnakeCmd cmd)
+        private void OnMove(SnakeCmd cmd)
         {
             float moveSpeed = ((MoveCmd)cmd).moveParam.moveSpeed;
             Vector3 pos = transform.position;
-            pos.z += moveSpeed;
+            pos += transform.forward * moveSpeed;
             transform.position = pos;
         }
     }
