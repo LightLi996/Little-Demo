@@ -12,7 +12,9 @@ namespace GameLogic.Object
         public static readonly float SEGMENT_LENGTH = 1.04f;
 
         public Vector3 target;
+        public int UID => _uid;
 
+        private int _uid;
         private List<SnakeBlock> _listBlock = new List<SnakeBlock>();
 
         private int _length;
@@ -23,8 +25,9 @@ namespace GameLogic.Object
 
         private ParamGroup _cacheParam  = new ParamGroup();
 
-        public void Init(float moveSpeed, float rotSpeed)
+        public void Init(int uid, float moveSpeed, float rotSpeed)
         {
+            _uid = uid;
             _length = 0;
             _cmdPtr = 0;
             _moveSpeed = moveSpeed;

@@ -12,29 +12,29 @@ namespace Framework.Manager
         public float moveSpeed;
         public float rotSpeed;
 
-        private List<Snaker> _listSnaker;
+        private Dictionary<int, Snaker> _dictSnaker;
 
         public void Awake()
         {
-            _listSnaker = new List<Snaker>();
+            _dictSnaker = new Dictionary<int, Snaker>();
 
-            _listSnaker.Add(CreateSnake());
+            _dictSnaker.Add(1, CreateSnake(1));
         }
 
-        public Snaker CreateSnake()
+        public Snaker CreateSnake(int uid)
         {
             Snaker snake = new Snaker();
-            snake.Init(Snaker.SEGMENT_LENGTH * moveSpeed, Snaker.SEGMENT_LENGTH * rotSpeed);
+            snake.Init(uid, Snaker.SEGMENT_LENGTH * moveSpeed, Snaker.SEGMENT_LENGTH * rotSpeed);
             return snake;
         }
 
         public void UpdateExc()
         {
-            for (int i = 0; i < _listSnaker.Count; i++)
+            foreach (var snake in _dictSnaker.Values)
             {
-                _listSnaker[i].MoveControl();
-                _listSnaker[i].RotateControl();
-                _listSnaker[i].ExcCmd();
+                snake.MoveControl();
+                snake.RotateControl();
+                snake.ExcCmd();
             }
         }
 
@@ -51,6 +51,13 @@ namespace Framework.Manager
             {
                 return null;
             }
+        }
+
+        public Snaker GetSnake(int UID)
+        {
+            Snaker snake = null;
+            _dictSnaker.TryGetValue(UID, out snake);
+            return snake;
         }
 
         public void Dispose()
