@@ -2,6 +2,7 @@
 using Framework.Behavior;
 using System;
 using System.Collections.Generic;
+using Framework.Manager;
 using UnityEngine;
 
 
@@ -14,25 +15,18 @@ namespace GameLogic.Object
 
         private Dictionary<CmdType, Action<SnakeCmd>> _actions = new Dictionary<CmdType, Action<SnakeCmd>>();
 
+        public abstract ParamGroup ExcCmd();
 
-        public void Init(int index, BlockType type)
+        public abstract void FillParam(ParamGroup param);
+
+
+        public virtual void Init(int index, int size, float speed)
         {
             RegisterCmd();
             this.index = index;
-            this.type = type;
         }
 
-        public void BeHit()
-        {
-
-        }
-
-        public void Store()
-        {
-
-        }
-
-        public void ExcCmd(SnakeCmd cmd)
+        public void ExcAction(SnakeCmd cmd)
         {
             Action<SnakeCmd> func;
             if (_actions.TryGetValue(cmd.type, out func))
@@ -40,12 +34,6 @@ namespace GameLogic.Object
                 func?.Invoke(cmd);
             }
         }
-
-        public void Dispose()
-        {
-
-        }
-
 
         private void RegisterCmd()
         {
@@ -67,6 +55,11 @@ namespace GameLogic.Object
             Vector3 pos = transform.position;
             pos += transform.forward * moveSpeed;
             transform.position = pos;
+        }
+
+        public virtual void Dispose()
+        {
+
         }
     }
 }

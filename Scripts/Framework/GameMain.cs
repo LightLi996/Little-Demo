@@ -12,9 +12,9 @@ namespace Framework
         public static readonly string MANAGER_PATH = "Managers/";
         public static readonly string BLUE_BLOCK_PATH = "Characters/Snakes/Blue/";
 
-
         void Awake()
         {
+
         }
 
 

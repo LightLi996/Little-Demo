@@ -9,7 +9,7 @@ namespace GameLogic.Object
 {
     public class Snaker
     {
-        private static readonly float _SEGMENT_LENGTH = 1.04f;
+        public static readonly float SEGMENT_LENGTH = 1.04f;
 
         public Vector3 target;
 
@@ -18,61 +18,65 @@ namespace GameLogic.Object
         private int _length;
         private float _moveSpeed;
         private float _rotSpeed;
+        private int _size;
+        private int _cmdPtr;
 
-        private List<ICmdParam[]> _cmdParamFlow = new List<ICmdParam[]>();
+        private ParamGroup _cacheParam  = new ParamGroup();
 
         public void Init(float moveSpeed, float rotSpeed)
         {
             _length = 0;
+            _cmdPtr = 0;
             _moveSpeed = moveSpeed;
             _rotSpeed = rotSpeed;
-            GenerateBlock(_length++, BlockType.Head);
-            GenerateBlock(_length++, BlockType.Body);
-            GenerateBlock(_length++, BlockType.Tail);
+            _size = (int)(1 / _moveSpeed);
 
-            SetPosition();
+            Create();
         }
 
         public void MoveControl()
         {
             MoveParam param = new MoveParam();
             param.moveSpeed = _moveSpeed;
-            for (int i = 0; i < _cmdParamFlow.Count; i++)
-            {
-                _cmdParamFlow[i][(int) CmdType.Move] = param;
-            }
+            _cacheParam.SetParam(CmdType.Move, param);
         }
 
         public void RotateControl()
         {
-            for (int i = _cmdParamFlow.Count - 1; i > 0; i--)
-            {
-                _cmdParamFlow[i][(int)CmdType.Rotate] = _cmdParamFlow[i - 1][(int) CmdType.Rotate];
-            }
-
-            var angle = _rotSpeed;
             RotateParam param = new RotateParam();
+            var angle = _rotSpeed;
             param.rotSpeed = angle;
-            _cmdParamFlow[0][(int) CmdType.Rotate] = param;
+            _cacheParam.SetParam(CmdType.Rotate, param);
         }
 
         public void ExcCmd()
         {
-            for (int i = 0; i < _cmdParamFlow.Count; i++)
+            _listBlock[0].FillParam(_cacheParam);
+            for (int i = 0; i < _listBlock.Count; i++)
             {
-                var param = _cmdParamFlow[i];
-                SingleManager<SnakeManager>.Get().CreateCmd<RotateCmd>(_listBlock[i], param[(int)CmdType.Rotate])?.Exc();
-                SingleManager<SnakeManager>.Get().CreateCmd<MoveCmd>(_listBlock[i], param[(int)CmdType.Move])?.Exc();
+                ParamGroup param = _listBlock[i].ExcCmd();
+                if (i < _listBlock.Count - 1)
+                {
+                    _listBlock[i + 1].FillParam(param);
+                }
             }
         }
 
-        private void GenerateBlock(int index, BlockType type)
+        private void Create()
         {
-            GameObject go = GameObject.Instantiate(Resources.Load(GameMain.BLUE_BLOCK_PATH + type.ToString())) as GameObject;
-            SnakeBlock block = go.GetComponent<SnakeBlock>();
-            block.Init(index, type);
+            GenerateBlock<SnakeHead>(_length++, _size, _moveSpeed);
+            GenerateBlock<SnakeBody>(_length++, _size, _moveSpeed);
+            GenerateBlock<SnakeTail>(_length++, _size, _moveSpeed);
+            SetPosition();
+        }
+
+        private void GenerateBlock<T>(int index, int size, float initialSpeed) where T : SnakeBlock
+        {
+            string name = typeof(T).Name;
+            GameObject go = GameObject.Instantiate(Resources.Load(GameMain.BLUE_BLOCK_PATH + name)) as GameObject;
+            T block = go.GetComponent<T>();
+            block.Init(index, size, initialSpeed);
             _listBlock.Add(block);
-            _cmdParamFlow.Add(new ICmdParam[(int) CmdType.Max]);
         }
 
         private void SetPosition()
@@ -81,7 +85,7 @@ namespace GameLogic.Object
             for (int i = 0; i < _listBlock.Count; i++)
             {
                 _listBlock[i].gameObject.transform.position = pos;
-                pos.z -= _SEGMENT_LENGTH;
+                pos.z -= SEGMENT_LENGTH;
             }
         }
     }

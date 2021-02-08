@@ -24,7 +24,7 @@ namespace Framework.Manager
         public Snaker CreateSnake()
         {
             Snaker snake = new Snaker();
-            snake.Init(moveSpeed, rotSpeed);
+            snake.Init(Snaker.SEGMENT_LENGTH * moveSpeed, Snaker.SEGMENT_LENGTH * rotSpeed);
             return snake;
         }
 

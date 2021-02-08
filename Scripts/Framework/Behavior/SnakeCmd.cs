@@ -22,6 +22,35 @@ namespace Framework.Behavior
         }
     }
 
+    public class ParamGroup
+    {
+        private ICmdParam[] group = new ICmdParam[(int)CmdType.Max];
+
+        public ParamGroup()
+        {
+            group[(int)CmdType.Move] = new MoveParam();
+            group[(int)CmdType.Rotate] = new RotateParam();
+        }
+
+        public ICmdParam GetParam(CmdType type)
+        {
+            return group[(int) type];
+        }
+
+        public void SetParam(ParamGroup param)
+        {
+            for (int i = 0; i < (int) CmdType.Max; i++)
+            {
+                group[i] = param.GetParam((CmdType) i);
+            }
+        }
+
+        public void SetParam(CmdType type, ICmdParam param)
+        {
+            group[(int) type] = param;
+        }
+    }
+
 
     public abstract class SnakeCmd : IObjectCache
     {
@@ -53,7 +82,7 @@ namespace Framework.Behavior
 
         public override void Exc()
         {
-            excer.ExcCmd(this);
+            excer.ExcAction(this);
         }
     }
 
@@ -70,7 +99,7 @@ namespace Framework.Behavior
 
         public override void Exc()
         {
-            excer.ExcCmd(this);
+            excer.ExcAction(this);
         }
     }
 

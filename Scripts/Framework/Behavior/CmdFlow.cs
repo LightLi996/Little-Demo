@@ -4,14 +4,27 @@ namespace Framework.Behavior
 {
     public class CmdFlow
     {
-        private List<ICmdParam[]> _flow = new List<ICmdParam[]>();
+        private List<ParamGroup> _flow = new List<ParamGroup>();
         private int _index;
+
+        public int Count => _flow.Count;
+
+        public void InitCmdParam(float moveSpeed)
+        {
+            for (int i = 0; i < _flow.Count; i++)
+            {
+                _flow[i] = new ParamGroup();
+                MoveParam param = new MoveParam();
+                param.moveSpeed = moveSpeed;
+                _flow[i].SetParam(CmdType.Move, param);
+            }
+        }
 
         public void SetSize(int size)
         {
             if (size > _flow.Count)
             {
-                ICmdParam[] param = new ICmdParam[(int) CmdType.Max];
+                ParamGroup param = new ParamGroup();
                 _flow.Add(param);
             }
             else
@@ -30,18 +43,31 @@ namespace Framework.Behavior
             {
                 for (int j = 0; j < (int) CmdType.Max; j++)
                 {
-                    _flow[i][j] = null;
+                    _flow[i] = null;
                 }
             }
+            _flow.Clear();
         }
 
-        public void Fill(ICmdParam[] param)
+        public void Enqueue(ParamGroup param)
         {
-            ICmdParam[] current = _flow[_index];
+            ParamGroup current = _flow[_index];
             for (int i = 0; i < (int) CmdType.Max; i++)
             {
-                current[i] = param[i];
+                current.SetParam(param);
             }
+
+            _index++;
+        }
+
+        public ParamGroup Dequeue()
+        {
+            if (_index >= _flow.Count)
+            {
+                _index = 0;
+            }
+
+            return _flow[_index];
         }
     }
 
