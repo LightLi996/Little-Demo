@@ -9,8 +9,8 @@ namespace Framework.Manager
 {
     public class SnakeManager : MonoBehaviour, IManager
     {
-        public float moveSpeed = 0.1f;
-        public float rotSpeed = 0.01f;
+        public float moveSpeed;
+        public float rotSpeed;
 
         private List<Snaker> _listSnaker;
 

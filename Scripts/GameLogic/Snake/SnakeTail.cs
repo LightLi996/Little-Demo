@@ -13,8 +13,8 @@ namespace GameLogic.Object
         {
             base.Init(index, size, speed);
 
-            cmdFlow.InitCmdParam(speed);
             cmdFlow.SetSize(size);
+            cmdFlow.InitCmdParam(speed);
         }
 
         public override ParamGroup ExcCmd()

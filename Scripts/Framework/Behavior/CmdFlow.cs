@@ -24,8 +24,11 @@ namespace Framework.Behavior
         {
             if (size > _flow.Count)
             {
-                ParamGroup param = new ParamGroup();
-                _flow.Add(param);
+                while (_flow.Count <= size)
+                {
+                    ParamGroup param = new ParamGroup();
+                    _flow.Add(param);
+                }
             }
             else
             {

@@ -12,9 +12,9 @@ namespace GameLogic.Object
         public override void Init(int index, int size, float speed)
         {
             base.Init(index, size, speed);
-
-            cmdFlow.InitCmdParam(speed);
+            
             cmdFlow.SetSize(size);
+            cmdFlow.InitCmdParam(speed);
         }
 
         public override ParamGroup ExcCmd()
