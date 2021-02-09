@@ -1,4 +1,5 @@
-﻿using GameLogic.Object;
+﻿using Framework.Helper;
+using GameLogic.Object;
 
 namespace Framework.Behavior
 {

@@ -1,4 +1,4 @@
-﻿namespace Framework
+﻿namespace Framework.Helper
 {
     public interface IManager
     {
@@ -36,6 +36,5 @@
         Rotate,
         Max,
     }
-
 
 }

@@ -3,47 +3,64 @@ using Framework.Controller;
 using System.Collections;
 using System.Collections.Generic;
 using Framework.Behavior;
+using Framework.Manager;
 using UnityEngine;
+using GameLogic.Object;
+using Framework.Helper;
 
-public class ControllerManager : MonoBehaviour, IManager
+namespace Framework.Manager
 {
-    private Dictionary<int, BaseController> _controllers;
-
-    public void Awake()
+    public class ControllerManager : MonoBehaviour, IManager
     {
-        _controllers = new Dictionary<int, BaseController>();
-    }
+        public BaseController[] controllers = new BaseController[2];
 
-    public void Dispose()
-    {
-        _controllers.Clear();
-    }
-
-    public void UpdateExc()
-    {
-        foreach (var ctrl in _controllers)
+        public void Dispose()
         {
-            if (ctrl.Value != null)
+
+        }
+
+        public void UpdateExc()
+        {
+            for (int i = 0; i < controllers.Length; i++)
             {
-                Inject<RotateParam>(ctrl.Key, ctrl.Value.Rotate);
+                if (controllers[i] == null)
+                {
+                    continue;
+                }
+
+                Snaker snake = SingleManager<SnakeManager>.Get().GetSnake(controllers[i].UID);
+                if (snake != null)
+                {
+                    Inject(snake.RotateControl, controllers[i].Rotate);
+                }
             }
         }
+
+        public RotateParam CalculateRotate(int uid, Vector3 target)
+        {
+            Snaker snake = SingleManager<SnakeManager>.Get().GetSnake(uid);
+            RotateParam param = new RotateParam();
+            if (snake != null)
+            {
+                float angle = Vector3.Angle(snake.Direction, target - snake.GetPosition());
+                if (angle > 0)
+                {
+                    param.rotSpeed = -Mathf.Min(angle, snake.RotateSpeed);
+                }
+                else
+                {
+                    param.rotSpeed = -Mathf.Max(angle, -snake.RotateSpeed);
+                }
+            }
+
+            return param;
+        }
+
+        private void Inject(ControlAction action, ICmdParam param)
+        {
+            action?.Invoke(param);
+        }
     }
 
-    public void RegisterController(int uid, BaseController ctrl)
-    {
-        if (_controllers.ContainsKey(uid))
-        {
-            _controllers[uid] = ctrl;
-        }
-        else
-        {
-            _controllers.Add(uid, ctrl);
-        }
-    }
-
-    private void Inject<T>(int uid, ICmdParam param) where T : ICmdParam
-    {
-        
-    }
 }
+

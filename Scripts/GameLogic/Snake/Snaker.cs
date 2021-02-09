@@ -1,5 +1,6 @@
 ﻿using Framework;
 using Framework.Behavior;
+using Framework.Helper;
 using Framework.Manager;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,12 @@ namespace GameLogic.Object
     {
         public static readonly float SEGMENT_LENGTH = 1.04f;
 
-        public Vector3 target;
         public int UID => _uid;
+        public int Size => _size;
+        public float MoveSpeed => _moveSpeed;
+        public float RotateSpeed => _rotSpeed;
+        public Vector3 Direction => _listBlock[0].gameObject.transform.forward;
+
 
         private int _uid;
         private List<SnakeBlock> _listBlock = new List<SnakeBlock>();
@@ -37,6 +42,12 @@ namespace GameLogic.Object
             Create();
         }
 
+        public Vector3 GetPosition()
+        {
+            Vector3 pos = _listBlock[0].gameObject.transform.position;
+            return new Vector2(pos.x, pos.z);
+        }
+
         public void MoveControl()
         {
             MoveParam param = new MoveParam();
@@ -44,11 +55,8 @@ namespace GameLogic.Object
             _cacheParam.SetParam(CmdType.Move, param);
         }
 
-        public void RotateControl()
+        public void RotateControl(ICmdParam param)
         {
-            RotateParam param = new RotateParam();
-            var angle = _rotSpeed;
-            param.rotSpeed = angle;
             _cacheParam.SetParam(CmdType.Rotate, param);
         }
 

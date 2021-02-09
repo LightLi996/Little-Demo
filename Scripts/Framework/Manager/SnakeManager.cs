@@ -1,4 +1,5 @@
 ﻿using Framework.Behavior;
+using Framework.Helper;
 using Framework.Model;
 using GameLogic.Object;
 using System.Collections;
@@ -33,7 +34,6 @@ namespace Framework.Manager
             foreach (var snake in _dictSnaker.Values)
             {
                 snake.MoveControl();
-                snake.RotateControl();
                 snake.ExcCmd();
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Framework.Helper;
+using System.Collections.Generic;
 
 namespace Framework.Behavior
 {

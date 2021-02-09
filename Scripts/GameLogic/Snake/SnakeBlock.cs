@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Framework.Manager;
 using UnityEngine;
-
+using Framework.Helper;
 
 namespace GameLogic.Object
 {

@@ -21,6 +21,7 @@ namespace Framework
         void Update()
         {
             SingleManager<SnakeManager>.Get().UpdateExc();
+            SingleManager<ControllerManager>.Get().UpdateExc();
         }
 
     }
