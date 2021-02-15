@@ -9,7 +9,7 @@ namespace Framework.Controller
     public class MouseController : BaseController
     {
         private Vector3 _target;
-        private bool _reached = false;
+        private bool _reached = true;
 
         public override void InputCheck()
         {
@@ -17,10 +17,11 @@ namespace Framework.Controller
             {
                 RaycastHit hit;
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out hit))
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                 {
                     _reached = false;
                     _target = hit.point;
+                    Debug.Log($"_target :: {_target}");
                 }
             }
         }
@@ -32,7 +33,7 @@ namespace Framework.Controller
                 return param;
 
             param = SingleManager<ControllerManager>.Get().CalculateRotate(UID, _target);
-            if (param.rotSpeed < 0.0001f)
+            if (Mathf.Abs(param.rotSpeed) < 0.0001f)
             {
                 _reached = true;
             }

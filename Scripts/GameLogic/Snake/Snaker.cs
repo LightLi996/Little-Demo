@@ -44,8 +44,7 @@ namespace GameLogic.Object
 
         public Vector3 GetPosition()
         {
-            Vector3 pos = _listBlock[0].gameObject.transform.position;
-            return new Vector2(pos.x, pos.z);
+            return _listBlock[0].gameObject.transform.position;
         }
 
         public void MoveControl()

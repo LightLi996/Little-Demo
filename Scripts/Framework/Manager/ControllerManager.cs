@@ -42,14 +42,14 @@ namespace Framework.Manager
             RotateParam param = new RotateParam();
             if (snake != null)
             {
-                float angle = Vector3.Angle(snake.Direction, target - snake.GetPosition());
+                float angle = Vector3.SignedAngle(snake.Direction, target - snake.GetPosition(), Vector3.up);
                 if (angle > 0)
                 {
-                    param.rotSpeed = -Mathf.Min(angle, snake.RotateSpeed);
+                    param.rotSpeed = Mathf.Min(angle, snake.RotateSpeed);
                 }
                 else
                 {
-                    param.rotSpeed = -Mathf.Max(angle, -snake.RotateSpeed);
+                    param.rotSpeed = Mathf.Max(angle, -snake.RotateSpeed);
                 }
             }
 
